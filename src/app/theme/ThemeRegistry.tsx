@@ -22,8 +22,12 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
     const prevInsert = cache.insert;
     let inserted: string[] = [];
 
-    cache.insert = (...args: any[]) => {
+    type InsertArgs = Parameters<typeof prevInsert>;
+    type InsertReturn = ReturnType<typeof prevInsert>;
+
+    cache.insert = (...args: InsertArgs): InsertReturn => {
       const serialized = args[1];
+      // Emotion usa "serialized.name"
       if (cache.inserted[serialized.name] === undefined) {
         inserted.push(serialized.name);
       }
@@ -54,11 +58,17 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
     );
   });
 
-  // lee el modo inicial del <html data-theme="..."> (lo seteamos en layout con Script)
-  const initialMode = (typeof document !== "undefined" &&
-    (document.documentElement.dataset.theme as ColorMode)) || "light";
+  // ✅ no uses document en el estado inicial (evita mismatch). Arranca en "light"
+  const [mode, setMode] = React.useState<ColorMode>("light");
 
-  const [mode, setMode] = React.useState<ColorMode>(initialMode);
+  // ✅ lee localStorage y/o dataset SOLO después de montar
+  React.useEffect(() => {
+    const stored = (localStorage.getItem("theme") as ColorMode | null) ?? null;
+    const dataset = (document.documentElement.dataset.theme as ColorMode | undefined) ?? undefined;
+
+    const initial = stored ?? dataset ?? "light";
+    setMode(initial);
+  }, []);
 
   React.useEffect(() => {
     document.documentElement.dataset.theme = mode;

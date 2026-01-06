@@ -172,23 +172,24 @@ export default function MegaMenuCatalog({
   const selectionLabel =
     selectionCategory?.name ?? (isAll ? "Catálogo" : activeParentLabel);
 
-  const productsInSelection = React.useMemo(() => {
-    const slug = selectionSlug;
+const productsInSelection = React.useMemo(() => {
+  const slug = selectionSlug;
 
-    let list =
-      slug === ALL_CATEGORY_SLUG
-        ? [...products]
-        : products.filter((p) => (p.categorySlugs ?? []).includes(slug));
+  const list =
+    slug === ALL_CATEGORY_SLUG
+      ? [...products]
+      : products.filter((p) => (p.categorySlugs ?? []).includes(slug));
 
-    list.sort((a, b) => {
-      const fa = a.featured ? 0 : 1;
-      const fb = b.featured ? 0 : 1;
-      if (fa !== fb) return fa - fb;
-      return (a.name ?? "").localeCompare(b.name ?? "");
-    });
+  list.sort((a, b) => {
+    const fa = a.featured ? 0 : 1;
+    const fb = b.featured ? 0 : 1;
+    if (fa !== fb) return fa - fb;
+    return (a.name ?? "").localeCompare(b.name ?? "");
+  });
 
-    return list.slice(0, 10);
-  }, [products, selectionSlug]);
+  return list.slice(0, 10);
+}, [products, selectionSlug]);
+
 
   const featuredInSelection = React.useMemo(() => {
     const featured = products.filter((p) => p.featured);

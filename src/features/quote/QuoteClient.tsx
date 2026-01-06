@@ -20,7 +20,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
-
+import Image from "next/image";
 import AppShell from "@/components/AppShell";
 import { useCart } from "@/state/cart/CartContext";
 
@@ -110,9 +110,8 @@ export default function QuoteClient() {
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
     : `https://wa.me/?text=${encodeURIComponent(msg)}`;
 
-  const mailTo = `mailto:${
-    process.env.NEXT_PUBLIC_QUOTE_EMAIL ?? "ventas@origen.com"
-  }?subject=${encodeURIComponent("Solicitud de cotización - Origen")}&body=${encodeURIComponent(msg)}`;
+  const mailTo = `mailto:${process.env.NEXT_PUBLIC_QUOTE_EMAIL ?? "ventas@origen.com"
+    }?subject=${encodeURIComponent("Solicitud de cotización - Origen")}&body=${encodeURIComponent(msg)}`;
 
   const copy = async () => {
     try {
@@ -447,21 +446,31 @@ export default function QuoteClient() {
                           boxShadow: isDark
                             ? "0 10px 20px rgba(0,0,0,.25)"
                             : "0 10px 20px rgba(15,23,42,.10)",
-                          display: "grid",
-                          placeItems: "center",
+                          position: "relative", // ✅ requerido para <Image fill />
                         }}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         {img ? (
-                          <img
+                          <Image
                             src={img}
                             alt={it.name}
-                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                            fill
+                            sizes="62px"
+                            style={{ objectFit: "cover" }}
                           />
                         ) : (
-                          <ImageSearchRoundedIcon fontSize="small" />
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              display: "grid",
+                              placeItems: "center",
+                            }}
+                          >
+                            <ImageSearchRoundedIcon fontSize="small" />
+                          </Box>
                         )}
                       </Box>
+
 
                       {/* Texto */}
                       <Box sx={{ minWidth: 0, flex: 1 }}>

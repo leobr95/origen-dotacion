@@ -20,7 +20,6 @@ import {
   DialogContent,
   Typography,
   Divider,
-  Grid,
   Card,
   CardContent,
   Stack,
@@ -44,9 +43,10 @@ import { ColorModeContext } from "@/app/theme/colorModeContext";
 // ✅ Logos por tema
 import origenLogoDark from "@/logo/origenlogot.png";
 import origenLogoLight from "@/logo/origenc.png";
-// ✅ Logos por tema
+// ✅ Logos por tema (modal)
 import origenLogoDark2 from "@/logo/origen_logo_transparent.png";
 import origenLogoLight2 from "@/logo/origen_logo_transparentc.png";
+
 type NavbarProps = { onOpenCart: () => void };
 
 type TrustedCompany = {
@@ -111,6 +111,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
 
   const logoSrc = isDark ? origenLogoDark : origenLogoLight;
   const logoSrc2 = isDark ? origenLogoDark2 : origenLogoLight2;
+
   const trustedCompanies: TrustedCompany[] = [
     { name: "Empresa Alfa", initials: "EA" },
     { name: "Logística Beta", initials: "LB" },
@@ -122,7 +123,9 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
 
   const dialogPaperBg = isDark ? "rgba(16,18,26,.92)" : "rgba(255,255,255,.96)";
   const dialogBorder = isDark ? "rgba(255,255,255,.10)" : "rgba(15,23,42,.10)";
-  const dialogShadow = isDark ? "0 30px 80px rgba(0,0,0,.55)" : "0 30px 80px rgba(15,23,42,.18)";
+  const dialogShadow = isDark
+    ? "0 30px 80px rgba(0,0,0,.55)"
+    : "0 30px 80px rgba(15,23,42,.18)";
 
   const cardBg = isDark ? "rgba(255,255,255,.04)" : "#FFFFFF";
   const cardBorder = isDark ? "rgba(255,255,255,.10)" : "rgba(15,23,42,.10)";
@@ -512,7 +515,13 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
                 flex: "0 0 auto",
               }}
             >
-              <Image src={logoSrc2} alt="Origen" fill sizes="180px" style={{ objectFit: "contain" }} />
+              <Image
+                src={logoSrc2}
+                alt="Origen"
+                fill
+                sizes="180px"
+                style={{ objectFit: "contain" }}
+              />
             </Box>
 
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -591,56 +600,68 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
           <Box sx={{ mt: 3 }}>
             <Typography sx={{ fontWeight: 900, mb: 1.2 }}>Empresas que confiaron en nosotros</Typography>
 
-            <Grid container spacing={1.5}>
+            {/* ✅ Reemplazo de Grid por CSS Grid (evita el error de tipos de MUI Grid) */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, minmax(0, 1fr))",
+                  md: "repeat(3, minmax(0, 1fr))",
+                },
+                gap: 1.5,
+              }}
+            >
               {trustedCompanies.map((c) => (
-                <Grid key={c.name} item xs={12} sm={6} md={4}>
-                  <Card
-                    elevation={0}
-                    sx={{
-                      borderRadius: 4,
-                      border: `1px solid ${cardBorder}`,
-                      background: cardBg,
-                      boxShadow: isDark ? "0 14px 36px rgba(0,0,0,.28)" : "0 14px 36px rgba(15,23,42,.10)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <CardContent sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
-                      <Box
-                        sx={{
-                          width: 46,
-                          height: 46,
-                          borderRadius: 3,
-                          display: "grid",
-                          placeItems: "center",
-                          fontWeight: 900,
-                          border: `1px solid ${cardBorder}`,
-                          background: isDark
-                            ? alpha(theme.palette.primary.main, 0.10)
-                            : alpha(theme.palette.primary.main, 0.08),
-                          color: theme.palette.text.primary,
-                          flex: "0 0 auto",
-                        }}
-                      >
-                        {c.initials}
-                      </Box>
+                <Card
+                  key={c.name}
+                  elevation={0}
+                  sx={{
+                    borderRadius: 4,
+                    border: `1px solid ${cardBorder}`,
+                    background: cardBg,
+                    boxShadow: isDark
+                      ? "0 14px 36px rgba(0,0,0,.28)"
+                      : "0 14px 36px rgba(15,23,42,.10)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <CardContent sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+                    <Box
+                      sx={{
+                        width: 46,
+                        height: 46,
+                        borderRadius: 3,
+                        display: "grid",
+                        placeItems: "center",
+                        fontWeight: 900,
+                        border: `1px solid ${cardBorder}`,
+                        background: isDark
+                          ? alpha(theme.palette.primary.main, 0.10)
+                          : alpha(theme.palette.primary.main, 0.08),
+                        color: theme.palette.text.primary,
+                        flex: "0 0 auto",
+                      }}
+                    >
+                      {c.initials}
+                    </Box>
 
-                      <Box sx={{ minWidth: 0 }}>
-                        <Typography sx={{ fontWeight: 900 }} noWrap>
-                          {c.name}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: alpha(theme.palette.text.primary, isDark ? 0.65 : 0.68) }}
-                          noWrap
-                        >
-                          Cliente corporativo
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography sx={{ fontWeight: 900 }} noWrap>
+                        {c.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: alpha(theme.palette.text.primary, isDark ? 0.65 : 0.68) }}
+                        noWrap
+                      >
+                        Cliente corporativo
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
               ))}
-            </Grid>
+            </Box>
           </Box>
         </DialogContent>
       </Dialog>
